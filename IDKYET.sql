@@ -182,5 +182,10 @@ from employee_demographics
 
 select trim('                     sky                        ') as triming;  -- Rtrim gets rid of the right spaces Ltrim gets rid of the left spaces
 
-
+select first_name ,left(first_name, 4),
+right(first_name,4),
+substring(first_name,3,2),
+birth_date
+from employee_demographics
+;
 
