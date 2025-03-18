@@ -89,3 +89,78 @@ from employee_salary
 select * 
 from parks_departments;
 
+
+select * 
+from employee_demographics
+where employee_id in 
+	(select employee_id 
+		from employee_salary
+        where dept_id = 1)
+;
+
+select *
+from employee_demographics
+where employee_id < 5;
+
+
+select  first_name, salary, 
+ (select avg(salary) from employee_salary)
+from employee_salary
+;
+
+
+select gender, avg(age) , max(age) , min(age), count(age)
+from employee_demographics
+group by gender
+;
+
+select gender, avg(max_age)
+from 
+(select gender, avg(age)  , max(age) as max_age, min(age), count(age)
+from employee_demographics
+group by gender
+) as agg_table
+group by gender
+;
+
+
+select avg(max_age)
+from 
+(select gender, avg(age)  , max(age) as max_age, min(age), count(age)
+from employee_demographics
+group by gender
+) as agg_table
+;
+
+-- window functions
+
+select gender, avg(salary)
+from employee_demographics dem
+join employee_salary sal
+	on dem.employee_id = sal.employee_id
+group by gender
+;
+
+select dem.first_name, dem.last_name, gender, avg(salary) over(partition by gender)
+from employee_demographics dem
+join employee_salary sal
+	on dem.employee_id = sal.employee_id
+;
+
+select dem.employee_id, dem.first_name, dem.last_name, gender, dem.age ,sal.salary , sum(salary) over(partition by gender order by dem.age)
+from employee_demographics dem
+join employee_salary sal
+	on dem.employee_id = sal.employee_id
+;
+
+select dem.employee_id , dem.first_name, dem.last_name, salary,
+row_number() over(order by salary) as row_num,
+rank()over(order by salary) as rank_num, 
+dense_rank()over(order by salary) as rank_num
+from employee_demographics dem
+join employee_salary sal
+	on dem.employee_id = sal.employee_id
+;
+
+
+
